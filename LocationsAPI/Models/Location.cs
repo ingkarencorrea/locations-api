@@ -8,6 +8,6 @@ public class Location
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public string? Type { get; set; }
-    public DateTime OpenTime { get; set; }
-    public DateTime CloseTime { get; set; }
+    public TimeOnly OpenTime { get; set; }
+    public TimeOnly CloseTime { get; set; }
 }

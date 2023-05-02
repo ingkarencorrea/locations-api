@@ -28,7 +28,7 @@ public class LocationService : ILocationService
         return await connection.QueryAsync<Location>("SELECT * FROM Location");
     }
     
-    public async Task<IEnumerable<Location>> GetAvailableLocations(DateTime openTimeReq, DateTime closeTimeReq)
+    public async Task<IEnumerable<Location>> GetAvailableLocations(TimeOnly openTimeReq, TimeOnly closeTimeReq)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
         return await connection.QueryAsync<Location>("SELECT * FROM Location WHERE OpenTime <= @openTime AND CloseTime >= @closeTime",

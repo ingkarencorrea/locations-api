@@ -7,5 +7,5 @@ public interface ILocationService
     public Task<bool> CreateAsync(Location location);
 
     public Task<IEnumerable<Location>> GetAllAsync();
-    public Task<IEnumerable<Location>> GetAvailableLocations(DateTime openTime, DateTime closeTime);
+    public Task<IEnumerable<Location>> GetAvailableLocations(TimeOnly openTime, TimeOnly closeTime);
 }

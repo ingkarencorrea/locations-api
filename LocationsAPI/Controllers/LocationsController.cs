@@ -1,3 +1,4 @@
+using System.Globalization;
 using LocationsAPI.Models;
 using LocationsAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +22,33 @@ public class LocationsController : ControllerBase
     public async Task<IActionResult> Get()
     {
         var locations = await _locationService.GetAllAsync();
+        if (!locations.Any())
+        {
+            return NotFound("No locations found");
+        }
         return Ok(locations);
     }
     
-    [HttpGet("available")]
-    public async Task<IActionResult> GetAvailableLocations([FromQuery] DateTime openTime, [FromQuery] DateTime closeTime)
+    [HttpPost("available")]
+    public async Task<IActionResult> GetAvailableLocations([FromBody] LocationFilter filter)
     {
-        var availableLocations = await _locationService.GetAvailableLocations(openTime, closeTime);
+        if ( !(TimeOnly.TryParseExact(filter.OpenTime, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var openTimeOnly) ))
+        {
+            return BadRequest("Invalid OpenTime. Please use HH:mm format");
+        }
+        if ( !(TimeOnly.TryParseExact(filter.CloseTime, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var closeTimeOnly) ))
+        {
+            return BadRequest("Invalid CloseTime. Please use HH:mm format");
+        }
+        
+        var availableLocations = await _locationService.GetAvailableLocations(openTimeOnly, closeTimeOnly);
+        if (!availableLocations.Any())
+        {
+            return NotFound("No locations available for the given times");
+        }
         return Ok(availableLocations);
     }
-    
+
     [HttpPost(Name = "CreateLocation")]
     public async Task<IActionResult> Post(Location location)
     {
