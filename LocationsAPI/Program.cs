@@ -1,4 +1,5 @@
 using LocationsAPI.Data;
+using LocationsAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(builder.Configuration.GetValue<string>("Database:ConnectionString")));
 builder.Services.AddSingleton<DatabaseInitializer>();
+builder.Services.AddSingleton<ILocationService, LocationService>();
 
 
 var app = builder.Build();

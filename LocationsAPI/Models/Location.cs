@@ -1,4 +1,4 @@
-namespace LocationsAPI;
+namespace LocationsAPI.Models;
 
 public class Location
 {
