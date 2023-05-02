@@ -9,7 +9,7 @@ namespace LocationsAPI.Controllers;
 public class LocationsController : ControllerBase
 {
     private readonly ILogger<LocationsController> _logger;
-    private ILocationService _locationService;
+    private readonly ILocationService _locationService;
 
     public LocationsController(ILogger<LocationsController> logger, ILocationService locationService)
     {
@@ -18,13 +18,17 @@ public class LocationsController : ControllerBase
     }
 
     [HttpGet(Name = "GetAllLocations")]
-    public IEnumerable<Location> Get()
+    public async Task<IActionResult> Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new Location()
-            {
-                Id = Random.Shared.Next(0, 50)
-            })
-            .ToArray();
+        var locations = await _locationService.GetAllAsync();
+        return Ok(locations);
+    }
+    
+    [HttpGet("available")]
+    public async Task<IActionResult> GetAvailableLocations([FromQuery] DateTime openTime, [FromQuery] DateTime closeTime)
+    {
+        var availableLocations = await _locationService.GetAvailableLocations(openTime, closeTime);
+        return Ok(availableLocations);
     }
     
     [HttpPost(Name = "CreateLocation")]

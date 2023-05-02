@@ -21,4 +21,17 @@ public class LocationService : ILocationService
                  VALUES (@Name, @Address, @Latitude, @Longitude, @Type, @OpenTime, @CloseTime)", location);
         return result > 0;
     }
+
+    public async Task<IEnumerable<Location>> GetAllAsync()
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        return await connection.QueryAsync<Location>("SELECT * FROM Location");
+    }
+    
+    public async Task<IEnumerable<Location>> GetAvailableLocations(DateTime openTimeReq, DateTime closeTimeReq)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        return await connection.QueryAsync<Location>("SELECT * FROM Location WHERE OpenTime <= @openTime AND CloseTime >= @closeTime",
+            new {openTime = openTimeReq, closeTime = closeTimeReq});
+    }
 }
